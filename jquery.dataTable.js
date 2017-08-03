@@ -41,10 +41,14 @@ DataTable.prototype.init = function(){
             '</td></tr>';
 
         var cookieName = window.location.pathname.split('/').join('') + '_' + this.$element.attr('id') + '_orderby';
-        this.options.orderby = $.parseJSON($.cookie(cookieName)) ||  this.options.orderby;
+        if (typeof $.cookie(cookieName) !== 'undefined') {
+            this.options.orderby = $.parseJSON($.cookie(cookieName)) || this.options.orderby;
+        }
 
         var cookieName = window.location.pathname.split('/').join('') + '_' + this.$element.attr('id') + '_limit';
-        this.options.limit = $.parseJSON($.cookie(cookieName)) ||  this.options.limit;
+        if (typeof $.cookie(cookieName) !== 'undefined') {
+            this.options.limit = $.parseJSON($.cookie(cookieName)) || this.options.limit;
+        }
 
         // Table headers init
         dataTable.renderHeader();
