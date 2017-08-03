@@ -36,7 +36,7 @@ DataTable.prototype.init = function(){
         var tdCount = $('thead th', dataTable.$element).size();
         var loading = '<tr><td colspan="' + tdCount + '" style="text-align: center">' +
             '<div class="progress progress-striped active" style="width: 20%; margin: 5px auto;">' +
-            '<div class="bar" style="width: 100%; line-height: 20px;">' + DataTable.options.loading + '</div>' +
+            '<div class="bar" style="width: 100%; line-height: 20px;">' + dataTable.options.loading + '</div>' +
             '</div>' +
             '</td></tr>';
 
@@ -270,6 +270,6 @@ $.fn.dataTable.defaults = {
     page: 1,
     filters: {},
     notFound: 'не найдено ни одной записи',
-    loading: 'загрузка...',
+    loading: 'Загрузка...',
     limitChangeEnabled: true,
 }
