@@ -57,6 +57,7 @@ DataTable.prototype.init = function(){
 
         $.ajax({
             url: this.options.source,
+            dataType: 'JSON',
             data: {
                 options: {
                     orderby: this.options.orderby,
@@ -72,8 +73,8 @@ DataTable.prototype.init = function(){
                     dataTable.totalCount = res.data.totalCount;
                     dataTable.render(res.data.data);
                 } else {
-                    var count = $('thead th', this.$element).size();
-                    $('tbody', this.$element).html('<tr><td colspan=' + count + '>' + this.options.notFound + '</td></tr>');
+                    var count = $('thead th', dataTable.$element).size();
+                    $('tbody', this.$element).html('<tr><td colspan=' + count + '>' + dataTable.options.notFound + '</td></tr>');
                 }
 
                 dataTable.options.onRender(res);
@@ -98,6 +99,11 @@ DataTable.prototype.render = function(data){
 
         if (this.pagination != ''){
             $(this.$element).after(this.pagination);
+
+            $('.paginationLimit select').select2({
+                minimumResultsForSearch: Infinity
+            });
+
             var pagination = $(this.$element).next();
 
             $('.pages button.btn', pagination).click(function(){
@@ -202,10 +208,10 @@ DataTable.prototype.buildPagination = function(){
 
     var pages = Math.ceil(this.totalCount / this.options.limit);
 
-    pagination += '<div class="btn-toolbar dataTable_pagination">';
+    pagination += '<div class="dataTable_pagination">';
 
     if (pages > 1){
-        pagination += '<div class="pages btn-group">';
+        pagination += '<div class="pages">';
         for (var i = 1; i <= pages; i++) {
             if ((i > 2 && i < page - 2) || (i < pages-2 && i > page + 2)) {
                 if (!paused){
@@ -228,17 +234,13 @@ DataTable.prototype.buildPagination = function(){
     }
 
     if (this.options.limitChangeEnabled) {
-        pagination += '<div class="btn-group paginationLimit">'
-            + '<button class="btn title">' + this.options.limit + '</button>'
-            + '<button class="btn dropdown-toggle" data-toggle="dropdown">'
-            + '<span class="caret"></span>'
-            + '</button>'
-            + '<ul class="dropdown-menu">'
-            + '<li><a href="javascript:;" data-value="10" data-id="limit">10</a></li>'
-            + '<li><a href="javascript:;" data-value="20" data-id="limit">20</a></li>'
-            + '<li><a href="javascript:;" data-value="50" data-id="limit">50</a></li>'
-            + '<li><a href="javascript:;" data-value="100" data-id="limit">100</a></li>'
-            + '</ul>'
+        pagination += '<div class="paginationLimit">'
+            + '<select class="select">'
+            + '<option value="10" data-value="10" data-id="limit">10</option>'
+            + '<option value="20" data-value="20" data-id="limit">20</option>'
+            + '<option value="50" data-value="50" data-id="limit">50</option>'
+            + '<option value="100" data-value="100" data-id="limit">100</option>'
+            + '</select>'
             + '</div>';
     }
 
