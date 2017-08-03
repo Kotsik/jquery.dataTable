@@ -14,9 +14,9 @@ DataTable.prototype.init = function(){
     var dataTable = this;
     var sleep;
 
-    if (this.options.source != ''){
+    if (dataTable.options.source != ''){
         var filter = {};
-        for (var key in this.options.filters) {
+        for (var key in dataTable.options.filters) {
 
             var reloadTable = function(){
                 clearInterval(sleep);
@@ -26,45 +26,45 @@ DataTable.prototype.init = function(){
                 }, 700);
             }
 
-            this.options.filters[key].off('keyup, change').on('keyup, change', reloadTable);
-            filter[key] = this.options.filters[key].val();
+            dataTable.options.filters[key].off('keyup, change').on('keyup, change', reloadTable);
+            filter[key] = dataTable.options.filters[key].val();
         }
 
-        var offset = (this.options.page - 1) * this.options.limit;
+        var offset = (dataTable.options.page - 1) * dataTable.options.limit;
 
         // loading
-        var tdCount = $('thead th', this.$element).size();
+        var tdCount = $('thead th', dataTable.$element).size();
         var loading = '<tr><td colspan="' + tdCount + '" style="text-align: center">' +
             '<div class="progress progress-striped active" style="width: 20%; margin: 5px auto;">' +
-            '<div class="bar" style="width: 100%; line-height: 20px;">Загрузка...</div>' +
+            '<div class="bar" style="width: 100%; line-height: 20px;">' + DataTable.options.loading + '</div>' +
             '</div>' +
             '</td></tr>';
 
-        var cookieName = window.location.pathname.split('/').join('') + '_' + this.$element.attr('id') + '_orderby';
+        var cookieName = window.location.pathname.split('/').join('') + '_' + dataTable.$element.attr('id') + '_orderby';
         if (typeof $.cookie(cookieName) !== 'undefined') {
-            this.options.orderby = $.parseJSON($.cookie(cookieName)) || this.options.orderby;
+            dataTable.options.orderby = $.parseJSON($.cookie(cookieName)) || dataTable.options.orderby;
         }
 
-        var cookieName = window.location.pathname.split('/').join('') + '_' + this.$element.attr('id') + '_limit';
+        var cookieName = window.location.pathname.split('/').join('') + '_' + dataTable.$element.attr('id') + '_limit';
         if (typeof $.cookie(cookieName) !== 'undefined') {
-            this.options.limit = $.parseJSON($.cookie(cookieName)) || this.options.limit;
+            dataTable.options.limit = $.parseJSON($.cookie(cookieName)) || dataTable.options.limit;
         }
 
         // Table headers init
         dataTable.renderHeader();
 
-        $('tbody', this.$element).html(loading);
+        $('tbody', dataTable.$element).html(loading);
 
         $.ajax({
-            url: this.options.source,
+            url: dataTable.options.source,
             dataType: 'JSON',
             data: {
                 options: {
-                    orderby: this.options.orderby,
-                    limit: this.options.limit,
+                    orderby: dataTable.options.orderby,
+                    limit: dataTable.options.limit,
                     offset: offset,
                     filters: filter,
-                    data: this.options.data
+                    data: dataTable.options.data
                 }
             },
             success: function(res){
@@ -270,5 +270,6 @@ $.fn.dataTable.defaults = {
     page: 1,
     filters: {},
     notFound: 'не найдено ни одной записи',
-    limitChangeEnabled: true
+    loading: 'загрузка...',
+    limitChangeEnabled: true,
 }
