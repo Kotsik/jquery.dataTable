@@ -30,7 +30,7 @@ DataTable.prototype.init = function(){
             filter[key] = dataTable.options.filters[key].val();
         }
 
-        var offset = (dataTable.options.page - 1) * dataTable.options.limit;
+
 
         // loading
         var tdCount = $('thead th', dataTable.$element).size();
@@ -45,10 +45,17 @@ DataTable.prototype.init = function(){
             dataTable.options.orderby = $.parseJSON($.cookie(cookieName)) || dataTable.options.orderby;
         }
 
+        var cookieName = window.location.pathname.split('/').join('') + '_' + dataTable.$element.attr('id') + '_page';
+        if (typeof $.cookie(cookieName) !== 'undefined') {
+            dataTable.options.page = $.parseJSON($.cookie(cookieName)) || dataTable.options.page;
+        }
+
         var cookieName = window.location.pathname.split('/').join('') + '_' + dataTable.$element.attr('id') + '_limit';
         if (typeof $.cookie(cookieName) !== 'undefined') {
             dataTable.options.limit = $.parseJSON($.cookie(cookieName)) || dataTable.options.limit;
         }
+
+        var offset = (dataTable.options.page - 1) * dataTable.options.limit;
 
         // Table headers init
         dataTable.renderHeader();
@@ -109,6 +116,8 @@ DataTable.prototype.render = function(data){
             $('.pages button.btn', pagination).click(function(){
                 if (!$(this).hasClass('active')){
                     dataTable.options.page = parseInt($(this).html());
+                    var cookieName = window.location.pathname.split('/').join('') + '_' + dataTable.$element.attr('id') + '_page';
+                    $.cookie(cookieName, JSON.stringify(dataTable.options.page));
                     dataTable.init();
                     return false;
                 }
