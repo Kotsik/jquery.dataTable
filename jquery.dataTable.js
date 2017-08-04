@@ -18,15 +18,17 @@ DataTable.prototype.init = function(){
         var filter = {};
         for (var key in dataTable.options.filters) {
 
-            var reloadTable = function(){
-                clearInterval(sleep);
-                sleep = setTimeout(function(){
-                    dataTable.options.page = 1;
-                    dataTable.init();
-                }, 700);
-            }
+            if (dataTable.options.autoReload) {
+                var reloadTable = function () {
+                    clearInterval(sleep);
+                    sleep = setTimeout(function () {
+                        dataTable.options.page = 1;
+                        dataTable.init();
+                    }, 700);
+                }
 
-            dataTable.options.filters[key].off('keyup, change').on('keyup, change', reloadTable);
+                dataTable.options.filters[key].off('keyup, change', reloadTable).on('keyup, change', reloadTable);
+            }
             filter[key] = dataTable.options.filters[key].val();
         }
 
@@ -271,6 +273,7 @@ $.fn.dataTable = function(options) {
 $.fn.dataTable.Constructor = DataTable;
 
 $.fn.dataTable.defaults = {
+    autoReload: false,
     onRender: function(){},
     orderby: [],
     source: '',
